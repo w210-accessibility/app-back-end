@@ -1,0 +1,8 @@
+.App {
+  text-align: center;
+}
+
+.mapcontainer {
+  outline: 1px solid red;
+  width: 500px;
+}
