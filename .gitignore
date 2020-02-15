@@ -1,0 +1,13 @@
+# OSX #
+.DS_Store
+
+# for Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# for React #
+frontend/node_modules/
