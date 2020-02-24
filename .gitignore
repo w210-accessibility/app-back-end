@@ -12,3 +12,6 @@ virt/*
 
 # pycache
 *pycache*
+
+# Development db
+development.db
