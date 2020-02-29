@@ -10,3 +10,13 @@ class PointFeature(db.Model):
     roadId = db.Column(db.Integer, nullable=False)
     label = db.Column(db.Integer, nullable=False)
     source = db.Column(db.Text(), nullable=False)
+
+# TODO: figure out elevation, geojson, sidewalk present indicator..
+# class SidewalkSegment(db.Model):
+#     roadId = db.Column(db.Integer, primary_key=True)
+#     directionInd = db.Column(db.Text(), primary_key=True)
+#     startLat = db.Column(db.Float, nullable=False)
+#     startLong = db.Column(db.Float, nullable=False)
+#     endLat = db.Column(db.Float, nullable=False)
+#     endLong = db.Column(db.Float, nullable=False)
+#     geoJson = db.Column(db.JSON, nullable=False)
