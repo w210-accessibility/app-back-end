@@ -3,7 +3,7 @@ from flask import (
 )
 from mvp_endpoint.ClientPrediction import *
 from mvp_endpoint import db
-from mvp_endpoint.models import Task
+from mvp_endpoint.models import PointFeature
 from flask import jsonify
 
 bp = Blueprint('mvp_endpoint', __name__)
