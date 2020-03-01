@@ -3,7 +3,7 @@ from mvp_endpoint import db
 # TODO figure out how to map label ints to actual labels
 # switch to enum type? or make a type table?
 class Pano(db.Model):
-    panoId = db.Column(db.Text(), primary_key=True)
+    panoId = db.Column(db.String(length=50), primary_key=True)
     headingDegree = db.Column(db.Float, primary_key=True)
     linearId = db.Column(db.Integer, nullable=False)
     lat = db.Column(db.Float, nullable=False)
@@ -14,7 +14,7 @@ class Pano(db.Model):
 # to have just to make query faster...
 class PanoFeature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    panoId = db.Column(db.Text(), nullable=False)
+    panoId = db.Column(db.String(length=50))
     linearId = db.Column(db.Integer, nullable=False)
     headingDegree = db.Column(db.Float, nullable=False)
     label = db.Column(db.Integer, nullable=False)
@@ -23,7 +23,7 @@ class PanoFeature(db.Model):
 # TODO: figure out elevation, geojson, sidewalk present indicator..
 class SidewalkSegment(db.Model):
     linearId = db.Column(db.Integer, primary_key=True)
-    directionInd = db.Column(db.Text(), primary_key=True)
+    directionInd = db.Column(db.String(length=50), primary_key=True)
     streetName = db.Column(db.Text(), nullable=True)
     startLat = db.Column(db.Float, nullable=False)
     startLong = db.Column(db.Float, nullable=False)
