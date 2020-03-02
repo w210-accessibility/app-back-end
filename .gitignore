@@ -13,5 +13,6 @@ virt/*
 # pycache
 *pycache*
 
-# Development db
+# Db config
+dbconfig.json
 development.db

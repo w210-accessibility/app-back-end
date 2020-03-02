@@ -3,8 +3,9 @@ from flask import (
 )
 from mvp_endpoint.ClientPrediction import *
 from mvp_endpoint import db
-from mvp_endpoint.models import Pano, PanoFeature, SidewalkSegment
+from mvp_endpoint.models import Pano, PanoFeature, SidewalkSegment2
 from flask import jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 bp = Blueprint('mvp_endpoint', __name__)
 
@@ -17,15 +18,25 @@ def index():
 # URL.
 @bp.route('/api/predictions/', methods=['GET'])
 def get_data_for_bounding_box():
-    lat1 = try_parse_int(request.args.get('lat1'))
-    long1 = try_parse_int(request.args.get('long1'))
-    lat2 = try_parse_int(request.args.get('lat2'))
-    long2 = try_parse_int(request.args.get('long2'))
+    # for mapbox, bounding boxes go (SW, NE)
+    sw_lat = try_parse_int(request.args.get('lat1'))
+    sw_long = try_parse_int(request.args.get('long1'))
+    ne_lat = try_parse_int(request.args.get('lat2'))
+    ne_long = try_parse_int(request.args.get('long2'))
 
-    # PLACEHOLDER making a couple generic objects to pass back
-    return_list = [ClientPrediction(lat1, long1, 0), ClientPrediction(lat2,long2,2)]
+    results = SidewalkSegment2.query.filter(SidewalkSegment2.startLat >= sw_lat) \
+                                    .filter(SidewalkSegment2.startLat <= ne_lat) \
+                                    .filter(SidewalkSegment2.startLong <= sw_long) \
+                                    .filter(SidewalkSegment2.startLong >= ne_long).all()
 
-    return jsonify({'preds': [pred.to_dict() for pred in return_list]})
+    # this is just a hacky little test
+    # next I need to figure out if I need to combine all these into one featureCollection or not
+    if len(results) == 0:
+        result = {}
+    else:
+        result = results[0].geoJson
+    return jsonify({"number of results": len(results),
+                    "first geoJson": result})
 
 def try_parse_int(inp):
     try:
