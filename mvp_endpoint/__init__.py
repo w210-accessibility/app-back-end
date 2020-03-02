@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
+import json
 from flask import Flask
 from flask import request
 from flask_cors import CORS
@@ -24,7 +25,18 @@ def create_app():
           }
           database_url = 'mysql://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s/%(NAME)s' % DATABASE
     else:
-        database_url = 'sqlite:///development.db'
+        with open('dbconfig.json') as json_file:
+            config = json.load(json_file)
+        # TODO do not push this
+        DATABASE = {
+          'NAME': 'ebdb',
+          'USER': config['DB_USER'],
+          'PASSWORD': config['DB_PASSWORD'],
+          'HOST': 'aa6f8tcntjfd0z.c5625ddefrth.us-west-2.rds.amazonaws.com',
+          'PORT': 3306,
+        }
+        database_url = 'mysql+pymysql://%(USER)s:%(PASSWORD)s@%(HOST)s:%(PORT)s/%(NAME)s' % DATABASE
+        #database_url = 'sqlite:///development.db'
 
     application.config.from_mapping(
         SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key',

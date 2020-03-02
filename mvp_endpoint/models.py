@@ -20,13 +20,15 @@ class PanoFeature(db.Model):
     label = db.Column(db.Integer, nullable=False)
     source = db.Column(db.Text(), nullable=False)
 
-# TODO: figure out elevation, geojson, sidewalk present indicator..
-class SidewalkSegment(db.Model):
-    linearId = db.Column(db.Integer, primary_key=True)
+# TODO: figure out elevation, sidewalk present indicator..
+class SidewalkSegment2(db.Model):
+    segmentId = db.Column(db.Integer, primary_key=True)
     directionInd = db.Column(db.String(length=50), primary_key=True)
+    linearId = db.Column(db.Integer, nullable=False)
     streetName = db.Column(db.Text(), nullable=True)
     startLat = db.Column(db.Float, nullable=False)
     startLong = db.Column(db.Float, nullable=False)
     endLat = db.Column(db.Float, nullable=False)
     endLong = db.Column(db.Float, nullable=False)
+    whichArcgisFile = db.Column(db.String(length=10))
     geoJson = db.Column(db.JSON, nullable=False)
