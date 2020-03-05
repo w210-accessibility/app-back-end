@@ -29,11 +29,21 @@ def get_data_for_bounding_box():
                                     .filter(SidewalkSegment2.startLong >= sw_long) \
                                     .filter(SidewalkSegment2.startLong <= ne_long).all()
 
-    response_geojson = {"type": "FeatureCollection"}
-    feature_list = []
-    for result in results:
-        feature_list.append(result.geoJson["features"])
-    response_geojson["features"] = feature_list
+    response_geojson = {}
+    sidewalk_issues = []
+    missing_sidewalk = []
+
+    ## JUST TRYING SOMETHING OUT to simulate the real thing
+    ## only showing yellow every 10
+    ## red every 45
+    for i, result in enumerate(results):
+        if i % 45 == 0:
+            missing_sidewalk.append(result.geoJson["features"][0])
+        if i % 10 == 0:
+            sidewalk_issues.append(result.geoJson["features"][0])
+
+    response_geojson["missing_sidewalk"] = missing_sidewalk
+    response_geojson["sidewalk_issues"] = sidewalk_issues
     return jsonify(response_geojson)
 
 def try_parse_float(inp):
