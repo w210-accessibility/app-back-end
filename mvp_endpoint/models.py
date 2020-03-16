@@ -37,7 +37,7 @@ class SidewalkSegment2(db.Model):
 class SidewalkSegment3(db.Model):
     segmentId = db.Column(db.Integer, primary_key=True)
     directionInd = db.Column(db.String(length=50), primary_key=True)
-    linearId = db.Column(db.Integer, nullable=False)
+    roadObjectId = db.Column(db.Integer, nullable=False)
     streetName = db.Column(db.Text(), nullable=True)
     startLat = db.Column(db.Float, nullable=False)
     startLong = db.Column(db.Float, nullable=False)
@@ -51,6 +51,6 @@ class SidewalkSegment3(db.Model):
 # TODO: maybe we won't use this at all and just go with my original idea
 class SegmentToPano2(db.Model):
     linkId = db.Column(db.Integer, primary_key=True)
-    segmentId = db.Column(db.Integer, db.ForeignKey(SidewalkSegment2.segmentId))
+    segmentId = db.Column(db.Integer, db.ForeignKey(SidewalkSegment3.segmentId))
     panoId = db.Column(db.Integer)
     headingDegree = db.Column(db.Float)

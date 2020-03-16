@@ -24,26 +24,37 @@ def get_data_for_bounding_box():
     ne_lat = try_parse_float(request.args.get('lat2'))
     ne_long = try_parse_float(request.args.get('long2'))
 
-    results = SidewalkSegment2.query.filter(SidewalkSegment2.startLat >= sw_lat) \
-                                    .filter(SidewalkSegment2.startLat <= ne_lat) \
-                                    .filter(SidewalkSegment2.startLong >= sw_long) \
-                                    .filter(SidewalkSegment2.startLong <= ne_long).all()
+    passable_results = SidewalkSegment3.query.filter(SidewalkSegment3.startLat >= sw_lat) \
+                                             .filter(SidewalkSegment3.startLat <= ne_lat) \
+                                             .filter(SidewalkSegment3.startLong >= sw_long) \
+                                             .filter(SidewalkSegment3.startLong <= ne_long) \
+                                             .filter(SidewalkSegment3.roadGrade <= .05) \
+                                             .all()
+
+    part_passable_results = SidewalkSegment3.query.filter(SidewalkSegment3.startLat >= sw_lat) \
+                                                  .filter(SidewalkSegment3.startLat <= ne_lat) \
+                                                  .filter(SidewalkSegment3.startLong >= sw_long) \
+                                                  .filter(SidewalkSegment3.startLong <= ne_long) \
+                                                  .filter(SidewalkSegment3.roadGrade >= .05) \
+                                                  .filter(SidewalkSegment3.roadGrade <= .1) \
+                                                  .all()
+
+    impassable_results = SidewalkSegment3.query.filter(SidewalkSegment3.startLat >= sw_lat) \
+                                                .filter(SidewalkSegment3.startLat <= ne_lat) \
+                                                .filter(SidewalkSegment3.startLong >= sw_long) \
+                                                .filter(SidewalkSegment3.startLong <= ne_long) \
+                                                .filter(SidewalkSegment3.roadGrade >= .1) \
+                                                .all()
 
     response_geojson = {}
-    sidewalk_issues = []
-    missing_sidewalk = []
+    passable_sidewalks = [res.geoJson for res in passable_results]
+    part_passable_sidewalks = [res.geoJson for res in part_passable_results]
+    impassable_sidewalks = [res.geoJson for res in impassable_results]
 
-    ## JUST TRYING SOMETHING OUT to simulate the real thing
-    ## only showing yellow every 10
-    ## red every 45
-    for i, result in enumerate(results):
-        if i % 45 == 0:
-            missing_sidewalk.append(result.geoJson["features"][0])
-        if i % 10 == 0:
-            sidewalk_issues.append(result.geoJson["features"][0])
-
-    response_geojson["missing_sidewalk"] = missing_sidewalk
-    response_geojson["sidewalk_issues"] = sidewalk_issues
+    # TODO change missing/issues language to reflect "passability" scheme
+    response_geojson["passable_sidewalks"] = passable_sidewalks
+    response_geojson["missing_sidewalk"] = part_passable_sidewalks
+    response_geojson["sidewalk_issues"] = impassable_sidewalks
     return jsonify(response_geojson)
 
 def try_parse_float(inp):
