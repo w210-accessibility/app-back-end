@@ -21,6 +21,7 @@ class PanoFeature(db.Model):
     headingDegree = db.Column(db.Float, nullable=False)
     label = db.Column(db.Integer, nullable=False)
     source = db.Column(db.Text(), nullable=False)
+    updateTs = db.Column(db.DateTime(), server_default=func.now())
 
 class SidewalkSegment2(db.Model):
     segmentId = db.Column(db.Integer, primary_key=True)
@@ -54,3 +55,24 @@ class SegmentToPano2(db.Model):
     segmentId = db.Column(db.Integer, db.ForeignKey(SidewalkSegment3.segmentId))
     panoId = db.Column(db.Integer)
     headingDegree = db.Column(db.Float)
+
+class SegmentToPano3(db.Model):
+    linkId = db.Column(db.Integer, primary_key=True)
+    segmentId = db.Column(db.Integer, db.ForeignKey(SidewalkSegment3.segmentId))
+    whichEndpoint = db.Column(db.Text())
+    panoId = db.Column(db.Integer)
+    headingDegree = db.Column(db.Float)
+
+class InSituFeedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lat = db.Column(db.Float, nullable=False)
+    long = db.Column(db.Float, nullable=False)
+    mode = db.Column(db.String(length=50), nullable=False)
+    label = db.Column(db.String(length=50), nullable=False)
+    updateTs = db.Column(db.DateTime(), server_default=func.now())
+
+    def __init__(self, lat, long, mode, label):
+        self.lat = lat
+        self.long = long
+        self.mode = mode
+        self.label = label 
