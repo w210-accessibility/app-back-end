@@ -6,12 +6,13 @@ from flask import Flask
 from flask import request
 from flask_cors import CORS
 from flask_migrate import Migrate
+import logging
 
 db = SQLAlchemy()
 
 def create_app():
     application = Flask(__name__)
-    CORS(application)
+    CORS(application, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
     migrate = Migrate()
 
@@ -42,8 +43,11 @@ def create_app():
         SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev_key',
         SQLALCHEMY_DATABASE_URI = database_url,
         SQLALCHEMY_POOL_RECYCLE = 280,
-        SQLALCHEMY_TRACK_MODIFICATIONS = False
+        SQLALCHEMY_TRACK_MODIFICATIONS = False,
+        CORS_HEADERS = 'Content-Type'
     )
+
+    logging.getLogger('flask_cors').level = logging.DEBUG
 
     db.init_app(application)
     migrate.init_app(application, db)
@@ -52,5 +56,13 @@ def create_app():
     from . import models
     from . import mvp_endpoint
     application.register_blueprint(mvp_endpoint.bp)
+
+    @application.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
 
     return application
