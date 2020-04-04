@@ -49,6 +49,22 @@ class SidewalkSegment3(db.Model):
     geoJson = db.Column(db.JSON, nullable=False)
     updateTs = db.Column(db.DateTime(), server_default=func.now())
 
+# adding on March 29 so that I can update road grades as a clean "insert df"
+# instead of trying to update the rows
+class SidewalkSegment4(db.Model):
+    segmentId = db.Column(db.Integer, primary_key=True)
+    directionInd = db.Column(db.String(length=50), primary_key=True)
+    roadObjectId = db.Column(db.Integer, nullable=False)
+    streetName = db.Column(db.Text(), nullable=True)
+    startLat = db.Column(db.Float, nullable=False)
+    startLong = db.Column(db.Float, nullable=False)
+    endLat = db.Column(db.Float, nullable=False)
+    endLong = db.Column(db.Float, nullable=False)
+    whichArcgisFile = db.Column(db.String(length=10))
+    roadGrade = db.Column(db.Float, nullable=False)
+    geoJson = db.Column(db.JSON, nullable=False)
+    updateTs = db.Column(db.DateTime(), server_default=func.now())
+
 # TODO: maybe we won't use this at all and just go with my original idea
 class SegmentToPano2(db.Model):
     linkId = db.Column(db.Integer, primary_key=True)
@@ -75,4 +91,4 @@ class InSituFeedback(db.Model):
         self.lat = lat
         self.long = long
         self.mode = mode
-        self.label = label 
+        self.label = label
