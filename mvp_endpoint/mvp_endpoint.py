@@ -100,6 +100,6 @@ def get_in_situ_feedback():
     # we can distinguish this query more if we want to have different symbols
     # for different things
     all_feedback = InSituFeedback.query.all()
-    result_list = [{'location': [res.long, res.lat], 'label': res.label} for res in all_feedback]
+    result_list = [{'location': [res.long, res.lat], 'label': res.label, 'date': res.updateTs.date()} for res in all_feedback]
     response['in_situ_results'] = result_list
     return jsonify(response)
