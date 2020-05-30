@@ -8,6 +8,7 @@ from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
 import json
 import math
+import datetime
 
 bp = Blueprint('mvp_endpoint', __name__)
 
@@ -96,10 +97,14 @@ def add_in_situ_feedback():
 
 @bp.route('/api/getInSitu/', methods=['GET'])
 def get_in_situ_feedback():
+    time_sensitive_labels = ['puddles', 'snowIce']
+    week_ago = datetime.date.today() - datetime.timedelta(days=7)
+
     response = {}
     # we can distinguish this query more if we want to have different symbols
     # for different things
     all_feedback = InSituFeedback.query.all()
     result_list = [{'location': [res.long, res.lat], 'label': res.label, 'date': res.updateTs.date()} for res in all_feedback]
-    response['in_situ_results'] = result_list
+    filtered_result_list = [r for r in result_list if not (r['label'] in time_sensitive_labels and r['date'] < week_ago)]
+    response['in_situ_results'] = filtered_result_list
     return jsonify(response)
